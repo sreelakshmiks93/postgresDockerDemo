@@ -1,19 +1,29 @@
 version: '3'
  
 services:
-  postgres:
-    image: "postgres:bookworm"
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_DB: tc
-      POSTGRES_USER: tc
-      POSTGRES_PASSWORD: tc
-   
   app:
     build: .
     ports:
       - 8080:8080
     depends_on:
-      - postgres
+      - db
+#    environment:
+#      SPRING_APPLICATION_JSON: '{
+#              "spring.datasource.url" : "jdbc:postgresql://localhost:5432/tc",
+#              "spring.datasource.username" : "tc",
+#              "spring.datasource.password" : "tc",
+#              "spring.jpa.hibernate.ddl-auto" : "update"
+#            }'
 
+  db:
+    image: "postgres:bookworm"
+    environment:
+      POSTGRES_DB: tc
+      POSTGRES_USER: tc
+      POSTGRES_PASSWORD: tc
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-s-data:/var/lib/postgresql/data
+volumes:
+  postgres-s-data:
